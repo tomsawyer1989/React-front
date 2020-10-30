@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { getPacientes } from '../fetch/homeFetch';
 import { postPaciente } from '../fetch/homeFetch';
@@ -12,6 +12,8 @@ function Home () {
 
     const {handleSubmit, register, errors} = useForm();
 
+    const formulario = useRef();
+
     useEffect (() => {
             getPacientes()
             .then(response => response.json())
@@ -20,7 +22,7 @@ function Home () {
         }, []
     );
 
-    const onSubmit = (values)=>{
+    const onSubmit = (values) => {
         postPaciente(values)
         .then(() => {
             const newPacientes = [...pacientes];
@@ -53,6 +55,23 @@ function Home () {
         })
         .catch(error => (error.message));
     }
+    
+    /*     Gestionando campos visuales del modal     */
+    const newRegister = () => {
+        setShow(!show);
+        formulario.current.reset();
+        formulario.current[3].style.display = 'block';
+        formulario.current[4].style.display = 'none';
+    }
+
+    const setFormulario = (paciente) => {
+        setShow(!show);
+        formulario.current[0].value = paciente.nombre;
+        formulario.current[1].value = paciente.cedula;
+        formulario.current[2].value = paciente.edad;
+        formulario.current[4].style.display = 'block';
+        formulario.current[3].style.display = 'none';
+    }
 
     const RenderPacientes = () => {
         return (
@@ -63,7 +82,7 @@ function Home () {
                         <td>{paciente.cedula}</td>
                         <td>{paciente.edad}</td>
                         <td>
-                            <button className="btn-success" onClick={() => {setShow(!show)}}><i className="fa fa-pencil"></i></button>
+                            <button className="btn-success" onClick={() => setFormulario(paciente)}><i className="fa fa-pencil"></i></button>
                             <button className="btn-danger" onClick={() => {removePaciente(paciente, i)}}><i className="fa fa-trash"></i></button>
                         </td>
                     </tr>
@@ -77,7 +96,7 @@ function Home () {
         <div className="container">
             <div className="row">
                 <div className="col mt-4 offset-1">
-                    <button className="btn-primary" onClick={() => {setShow(!show)}}><i className="fa fa-plus"></i></button>
+                    <button className="btn-primary" onClick={() => {newRegister()}}><i className="fa fa-plus"></i></button>
                     <table className="table">
                         <thead>
                             <tr>
@@ -108,7 +127,7 @@ function Home () {
                         <button className="close" onClick={()=>setShow(!show)}>&times;</button>
                     </div>
                     <div className="modal-body">
-                        <form onSubmit={handleSubmit(onSubmit)}>
+                        <form ref={formulario} onSubmit={handleSubmit(onSubmit)}>
                             <div className="row offset-1">
                                 <div className="col-12">
                                     <input placeholder="Nombre" name="nombre" ref={register({

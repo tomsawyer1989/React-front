@@ -1,3 +1,29 @@
 .navbar {
     background: #99bb44;
 }
+.container {
+    margin-left: 15.5%;
+}
+#sidebar {
+    position: absolute;
+    height: 100%;
+    width: 216px;
+}
+#sidebar .items {
+    padding: 0px;
+}
+#sidebar .items li {
+    height: 55px;
+    padding: 15px 0px 0px 25px;
+    margin: 0px;
+    list-style: none;
+    background: #99bb44;
+    border-top: 1px solid white;
+}
+#sidebar a {
+    text-decoration: none;
+    color: lightgray;
+}
+#sidebar a:hover {
+    color: white;
+}

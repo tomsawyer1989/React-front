@@ -1,14 +1,21 @@
 import React from 'react';
 import Navegar from './NavComponent';
 import Home from './HomeComponent';
-import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
+import Admin from './AdminComponent';
+import Medico from './MedicoComponent';
+import Paciente from './PacienteComponent';
+import { Switch, Route, Redirect } from 'react-router-dom';
 
 function Main () {
+
     return(
         <>
         <Navegar/>
         <Switch>
             <Route exact path="/home" component={() => <Home/>}/>
+            <Route exact path="/admin" component={() => <Admin/>}/>
+            <Route exact path="/admin/medicos" component={() => <Medico/>}/>
+            <Route exact path="/admin/pacientes" component={() => <Paciente/>}/>
             <Redirect to="/home"/>
         </Switch>
         </>

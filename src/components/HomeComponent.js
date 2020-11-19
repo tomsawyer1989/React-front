@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
-import { getPacientes } from '../fetch/homeFetch';
-import { postPaciente } from '../fetch/homeFetch';
-import { putPaciente } from '../fetch/homeFetch';
-import { deletePaciente } from '../fetch/homeFetch';
+import { getPacientes } from '../fetch/pacientesFetch';
+import { postPaciente } from '../fetch/pacientesFetch';
+import { putPaciente } from '../fetch/pacientesFetch';
+import { deletePaciente } from '../fetch/pacientesFetch';
 
 function Home () {
 
@@ -37,7 +37,7 @@ function Home () {
         .then(() => {
             const aux = [...pacientes];
             const newPacientes = aux.map(paciente => {
-                if(paciente.cedula == values.cedula)
+                if(paciente.cedula === values.cedula)
                     paciente.nombre = values.nombre;
                     return paciente;
             });

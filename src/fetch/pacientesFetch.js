@@ -1,19 +1,27 @@
 import { baseUrl } from '../shared/baseUrl';
 
 export const getPacientes = () => {
+    // const bearer = 'Bearer ' + localStorage.getItem('token');
     return fetch (baseUrl + 'pacientes', {
         method: "GET",
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            // 'Authorization': bearer
          }
-    })
+    });
 }
 
 export const postPaciente = (paciente) => {
   const newPaciente = {
+    medico_id: paciente.medico_id,
+    barrio_id: paciente.barrio_id,
+    ciudad_id: paciente.ciudad_id,
     nombre: paciente.nombre,
     cedula: paciente.cedula,
-    edad: paciente.edad
+    edad: paciente.edad,
+    direccion: paciente.direccion,
+    geolocalizacion: '',
+    created_at: new Date().toUTCString(),
   }
   return fetch(baseUrl + 'pacientes', {
     method: "POST",
@@ -21,13 +29,21 @@ export const postPaciente = (paciente) => {
     headers: {
       'Content-Type': 'application/json'
     }
-  })
+  });
 };
 
-export const putPaciente = (paciente) => {
+export const putPaciente = (id, paciente) => {
   const newPaciente = {
+    id: id,
+    medico_id: paciente.medico_id,
+    barrio_id: paciente.barrio_id,
+    ciudad_id: paciente.ciudad_id,
     nombre: paciente.nombre,
-    cedula: paciente.cedula
+    cedula: paciente.cedula,
+    edad: paciente.edad,
+    direccion: paciente.direccion,
+    geolocalizacion: '',
+    created_at: new Date().toUTCString(),
   }
   return fetch(baseUrl + 'pacientes', {
     method: "PUT",
@@ -35,7 +51,7 @@ export const putPaciente = (paciente) => {
     headers: {
       'Content-Type': 'application/json'
     }
-  })
+  });
 };
 
 export const deletePaciente = (paciente) => {
@@ -48,5 +64,5 @@ export const deletePaciente = (paciente) => {
       headers: {
         'Content-Type': 'application/json'
       }
-    })
+    });
   }

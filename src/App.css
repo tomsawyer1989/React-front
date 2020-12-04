@@ -1,11 +1,13 @@
 .navbar {
     background: #99bb44;
+    border-bottom: 1px solid white;
 }
 .container {
     margin-left: 15.5%;
 }
 #sidebar {
     position: absolute;
+    background: #99bb44;
     height: 100%;
     width: 216px;
 }
@@ -18,7 +20,7 @@
     margin: 0px;
     list-style: none;
     background: #99bb44;
-    border-top: 1px solid white;
+    border-bottom: 1px solid white;
 }
 #sidebar a {
     text-decoration: none;

@@ -39,3 +39,14 @@ export const getVisitasByMes = () => {
        }
   });
 }
+
+export const getVisitasBySemana = () => {
+  // const bearer = 'Bearer ' + localStorage.getItem('token');
+  return fetch (baseUrl + 'visitas/informe/semanal', {
+      method: "GET",
+      headers: {
+          'Content-Type': 'application/json',
+          // 'Authorization': bearer
+       }
+  });
+}

@@ -10,3 +10,14 @@ export const getBarrios = () => {
          }
     });
 }
+
+export const getPacientesByBarrios = () => {
+    // const bearer = 'Bearer ' + localStorage.getItem('token');
+    return fetch (baseUrl + 'barrios/informe', {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+            // 'Authorization': bearer
+         }
+    });
+}

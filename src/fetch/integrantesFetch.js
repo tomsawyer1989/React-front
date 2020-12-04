@@ -1,8 +1,8 @@
 import { baseUrl } from '../shared/baseUrl';
 
-export const getIntegrantes = () => {
+export const getIntegrantes = (params) => {
     // const bearer = 'Bearer ' + localStorage.getItem('token');
-    return fetch (baseUrl + 'integrantes', {
+    return fetch (baseUrl + 'integrantes/' + params, {
         method: "GET",
         headers: {
             'Content-Type': 'application/json',
@@ -11,9 +11,9 @@ export const getIntegrantes = () => {
     });
 }
 
-export const postIntegrante = (id, integrante) => {
+export const postIntegrante = (integrante) => {
     const newIntegrante = {
-      paciente_id: id,                // id del paciente
+      paciente_id: integrante.paciente_id,                // id del paciente
       nombre: integrante.nombre,
       cedula: integrante.cedula,
       parentesco: integrante.parentesco,

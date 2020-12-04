@@ -11,6 +11,9 @@ function Sidebar (){
                 <li>
                     <Link to="/admin/pacientes"><span className="fa fa-virus fa-lg"></span> Pacientes</Link>
                 </li>
+                <li>
+                    <Link to="/admin/inventario"><span className="fa fa-inventory fa-lg"></span> Inventario</Link>
+                </li>
             </ul>
         </div>
     );

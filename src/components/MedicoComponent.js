@@ -86,11 +86,12 @@ function Medico (){
     }
 
     const editarMedico = (values) => {
-        putMedico(id, values)
+        values.id = id;             // Para agregar el id del medico en el objeto values
+        putMedico(values)
         .then(() => {
             const aux = [...medicos];
             const newMedicos = aux.map(medico => {
-                if(medico.id === id) {
+                if(medico.id === values.id) {
                     medico.nombre = values.nombre;
                     medico.cedula = values.cedula;
                     medico.direccion = values.direccion;

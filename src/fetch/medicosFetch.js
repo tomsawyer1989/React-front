@@ -31,10 +31,10 @@ export const postMedico = (medico) => {
   })
 };
 
-export const putMedico = (id, medico) => {
+export const putMedico = (medico) => {
   const newMedico = {
-    id: id,                                     // id del médico
     secretario_id: localStorage.getItem('id'),  // id del secretario que registró al médico
+    id: medico.id,                              // id del médico
     barrio_id: medico.barrio_id,
     nombre: medico.nombre,
     cedula: medico.cedula,

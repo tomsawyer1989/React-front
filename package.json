@@ -14,7 +14,8 @@
     "react-dom": "^16.14.0",
     "react-hook-form": "^6.9.4",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.3"
+    "react-scripts": "3.4.3",
+    "react-vis": "^1.11.7"
   },
   "scripts": {
     "start": "set PORT=3006 && react-scripts start",

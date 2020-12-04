@@ -1,161 +1,157 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { getPacientes } from '../fetch/pacientesFetch';
-import { postPaciente } from '../fetch/pacientesFetch';
-import { putPaciente } from '../fetch/pacientesFetch';
-import { deletePaciente } from '../fetch/pacientesFetch';
+import { getPacientesByBarrios } from '../fetch/barriosFetch';
+import { getPacientesByEdades } from '../fetch/pacientesFetch';
+import { getVisitasByMes } from '../fetch/visitasFetch';
+import BarChart from './charts/BarChart';
 
 function Home () {
+    const [pacientesByBarrios, setPacientesByBarrios] = useState([]);
+    const [pacientesByEdades, setPacientesByEdades] = useState([]);
+    const [visitasByPeriodo, setVisitasByPeriodo] = useState([]);
 
-    const [pacientes, setPacientes] = useState([]);
-    const [show, setShow] = useState(false);
+    const [pacByBarChart, setPacByBarChart] = useState([]);
+    const [pacByEdadChart, setPacByEdadChart] = useState([]);
+    const [visByPerChart, setVisByPerChart] = useState([]);
 
     const {handleSubmit, register, errors} = useForm();
 
-    const formulario = useRef();
-
-    useEffect (() => {
-            getPacientes()
-            .then(response => response.json())
-            .then(response => setPacientes(response))
-            .catch(error => (error.message));
-        }, []
-    );
-
-    const onSubmit = (values) => {
-        postPaciente(values)
-        .then(() => {
-            const newPacientes = [...pacientes];
-            newPacientes.push(values);
-            setPacientes(newPacientes);
-        })
+    useEffect(() => {
+        getPacientesByBarrios()
+        .then(response => response.json())
+        .then(response => setPacientesByBarrios(response))
         .catch(error => (error.message));
-    }
 
-    const editarPaciente = (values) => {
-        putPaciente(values)
-        .then(() => {
-            const aux = [...pacientes];
-            const newPacientes = aux.map(paciente => {
-                if(paciente.cedula === values.cedula)
-                    paciente.nombre = values.nombre;
-                    return paciente;
-            });
-            setPacientes(newPacientes);
-        })
+        getPacientesByEdades()
+        .then(response => response.json())
+        .then(response => setPacientesByEdades(response))
         .catch(error => (error.message));
-    }
+    }, []);
 
-    const removePaciente = (paciente, i) => {
-        deletePaciente(paciente)
-        .then(() => {
-            const newPacientes = [...pacientes];
-            newPacientes.splice(i, 1);
-            setPacientes(newPacientes);
-        })
-        .catch(error => (error.message));
-    }
-    
-    /*     Gestionando campos visuales del modal     */
-    const newRegister = () => {
-        setShow(!show);
-        formulario.current.reset();
-        formulario.current[3].style.display = 'block';
-        formulario.current[4].style.display = 'none';
-    }
+    useEffect(() => {
+        const coordenadasBarrios = pacientesByBarrios.map(item => {
+            return {
+                x: item.nombre,
+                y: item.cantidad
+            }
+        });
 
-    const setFormulario = (paciente) => {
-        setShow(!show);
-        formulario.current[0].value = paciente.nombre;
-        formulario.current[1].value = paciente.cedula;
-        formulario.current[2].value = paciente.edad;
-        formulario.current[4].style.display = 'block';
-        formulario.current[3].style.display = 'none';
-    }
+        const coordenadasEdades = pacientesByEdades.map(item => {
+            return {
+                x: item.edad.toString(),
+                y: item.cantidad
+            }
+        });
 
-    const RenderPacientes = () => {
-        return (
-            pacientes.map((paciente, i) => {
-                return (
-                    <tr key={i}>
-                        <td>{paciente.nombre}</td>
-                        <td>{paciente.cedula}</td>
-                        <td>{paciente.edad}</td>
-                        <td>
-                            <button className="btn-success" onClick={() => setFormulario(paciente)}><i className="fa fa-pencil"></i></button>
-                            <button className="btn-danger" onClick={() => {removePaciente(paciente, i)}}><i className="fa fa-trash"></i></button>
-                        </td>
-                    </tr>
-                );
-            })
-        );
+        const meses = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+        const coordenadasMes = visitasByPeriodo.map(item => {
+            return {
+                x: meses[item.mes],
+                y: item.cantidad
+            }
+        });
+        
+        setPacByBarChart(coordenadasBarrios);
+        setPacByEdadChart(coordenadasEdades);
+        setVisByPerChart(coordenadasMes);
+    }, [pacientesByBarrios, pacientesByEdades, visitasByPeriodo]);
+
+    const getPeriodo = (values) => {
+        switch (values.periodo) {
+            case 'diario': alert('diario');
+                break;
+            case 'semanal': alert('semanal');
+                break;
+            case 'mensual': getVisitasByMes()
+                            .then(response => response.json())
+                            .then(response => setVisitasByPeriodo(response))
+                            .catch(error => (error.message));
+                break;
+            default: console.log('No existe la opción.');
+        } 
     }
 
     return(
         <>
         <div className="container">
             <div className="row">
-                <div className="col mt-4 offset-1">
-                    <button className="btn-primary" onClick={() => {newRegister()}}><i className="fa fa-plus"></i></button>
-                    <table className="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">Nombre</th>
-                                <th scope="col">Cédula</th>
-                                <th scope="col">Edad</th>
-                                <th scope="col">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <RenderPacientes/>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th>Total</th>
-                                <th>{pacientes.length}</th>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div className="modal" style={{display: (show ? 'block' : 'none')}}>
-            <div className="modal-dialog modal-sm">
-                <div className="modal-content">
-                    <div className="modal-header">
-                        Datos del paciente
-                        <button className="close" onClick={()=>setShow(!show)}>&times;</button>
-                    </div>
-                    <div className="modal-body">
-                        <form ref={formulario} onSubmit={handleSubmit(onSubmit)}>
-                            <div className="row offset-1">
-                                <div className="col-12">
-                                    <input placeholder="Nombre" name="nombre" ref={register({
-                                            required: "Required"
-                                        })}
-                                    />
-                                    {errors.nombre && errors.nombre.message}
-                                </div>
-                                <div className="col-12 mt-1">
-                                    <input placeholder="Cédula" name="cedula" ref={register({
-                                            required: "Required"
-                                        })}
-                                    />
-                                    {errors.cedula && errors.cedula.message}
-                                </div>
-                                <div className="col-12 mt-1">
-                                    <input placeholder="Edad" name="edad" ref={register({
-                                            required: "Required"
-                                        })}
-                                    />
-                                    {errors.edad && errors.edad.message}
-                                </div>
-                                <div className="col-12 mt-3">
-                                    <button type="submit" className="btn btn-primary"><i className="fa fa-plus"></i></button>
-                                    <button onClick={handleSubmit(editarPaciente)} className="btn btn-success"><i className="fa fa-pencil"></i></button>
+                <div className="col-10 mt-2">
+                    <div className="card">
+                        <div className="card-body">
+                            <h4 class="card-title">Contagiados por Barrio</h4>
+                            <div className="card-text">
+                                <div className="row">
+                                    <div className="col-12 mt-5">
+                                        <BarChart
+                                            title1='Contagiados'
+                                            data1={pacByBarChart}
+                                            color1='#acbf61'
+                                            height={350}
+                                            margin={{ bottom: 100, left: 120, top: 70, right: 80}}
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                        </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="row">
+                <div className="col-10 mt-2">
+                    <div className="card">
+                        <div className="card-body">
+                            <h4 class="card-title">Contagiados por Edades</h4>
+                            <div className="card-text">
+                                <div className="row">
+                                    <div className="col-12 mt-5">
+                                        <BarChart
+                                            title1='Contagiados'
+                                            data1={pacByEdadChart}
+                                            color1='#acbf61'
+                                            height={350}
+                                            margin={{ bottom: 100, left: 120, top: 70, right: 80}}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="row">
+                <div className="col-10 mt-2">
+                    <div className="card">
+                        <div className="card-body">
+                            <h4 class="card-title">Informe de Visitas</h4>
+                            <div className="card-text">
+                                <div className="row">
+                                    <div className="col-12 mt-5 offset-1">
+                                        <form onSubmit={handleSubmit(getPeriodo)}>
+                                            <div className="row">
+                                                <div className="col-12">
+                                                    <select name="periodo" ref={register}>
+                                                        <option value="diario">Diario</option>
+                                                        <option value="semanal">Semanal</option>
+                                                        <option value="mensual">Mensual</option>
+                                                    </select>
+                                                    <button type="submit" className="btn btn-light"><i className="fa fa-search"></i> Consultar</button>
+                                                </div>
+                                            </div>   
+                                        </form>
+                                    </div>
+                                    <div className="col-12 mt-5">
+                                        <BarChart
+                                            title1='Visitados'
+                                            data1={visByPerChart}
+                                            color1='#acbf61'
+                                            height={350}
+                                            margin={{ bottom: 100, left: 120, top: 70, right: 80}}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

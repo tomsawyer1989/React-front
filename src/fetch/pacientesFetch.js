@@ -32,9 +32,9 @@ export const postPaciente = (paciente) => {
   });
 };
 
-export const putPaciente = (id, paciente) => {
+export const putPaciente = (paciente) => {
   const newPaciente = {
-    id: id,
+    id: paciente.id,
     medico_id: paciente.medico_id,
     barrio_id: paciente.barrio_id,
     ciudad_id: paciente.ciudad_id,
@@ -66,3 +66,14 @@ export const deletePaciente = (paciente) => {
       }
     });
   }
+
+  export const getPacientesByEdades = () => {
+    // const bearer = 'Bearer ' + localStorage.getItem('token');
+    return fetch (baseUrl + 'pacientes/informe', {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+            // 'Authorization': bearer
+         }
+    });
+}
